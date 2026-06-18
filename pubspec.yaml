@@ -38,6 +38,9 @@ dependencies:
   # Opens the GitHub repository link in a new browser tab.
   url_launcher: ^6.3.0
 
+  # Inter + JetBrains Mono webfonts to match the imported design.
+  google_fonts: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
