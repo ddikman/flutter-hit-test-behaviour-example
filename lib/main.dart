@@ -235,7 +235,8 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: wrapMax),
             child: SingleChildScrollView(
