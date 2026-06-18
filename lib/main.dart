@@ -1,6 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+/// The GitHub repository for this demo, linked from the AppBar and the footer.
+final Uri _repoUrl =
+    Uri.parse('https://github.com/ddikman/flutter-hit-test-behaviour-example');
 
 void main() {
   runApp(const HitTestDemoApp());
@@ -94,6 +99,13 @@ class _DemoPageState extends State<DemoPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('GestureDetector HitTestBehavior'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.code),
+            tooltip: 'View source on GitHub',
+            onPressed: () => launchUrl(_repoUrl, webOnlyWindowName: '_blank'),
+          ),
+        ],
       ),
       body: Center(
         child: ConstrainedBox(
@@ -179,6 +191,15 @@ class _DemoPageState extends State<DemoPage> {
                   'Container would be tappable everywhere by default — that is why '
                   'the outline here is drawn separately from the tap target.)',
                   style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () =>
+                        launchUrl(_repoUrl, webOnlyWindowName: '_blank'),
+                    icon: const Icon(Icons.code),
+                    label: const Text('View the source on GitHub'),
+                  ),
                 ),
               ],
             ),
