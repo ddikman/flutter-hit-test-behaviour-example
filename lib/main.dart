@@ -1,17 +1,26 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'demo_data.dart';
 import 'theme.dart';
+import 'widgets/debug_paint_note.dart';
 import 'widgets/demo_card.dart';
 import 'widgets/demo_header.dart';
 import 'widgets/status_bar.dart';
 import 'widgets/why_note.dart';
 
-void main() => runApp(const HitTestDemoApp());
+void main() {
+  assert(() {
+    debugPaintSizeEnabled = true;
+    return true;
+  }());
+  runApp(const HitTestDemoApp());
+}
 
 class HitTestDemoApp extends StatelessWidget {
   const HitTestDemoApp({super.key});
@@ -90,6 +99,10 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
                   const SizedBox(height: 24),
                   _grid(cols),
                   const SizedBox(height: 24),
+                  if (kDebugMode) ...[
+                    const DebugPaintNote(),
+                    const SizedBox(height: 24),
+                  ],
                   const WhyNote(),
                   const SizedBox(height: 20),
                   _footer(),
@@ -102,7 +115,7 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
     );
   }
 
-  /// Lays the cards out in [cols] columns, equalising row heights.
+  /// Lays the cards out in [cols] columns, top-aligned so descriptions can wrap freely.
   Widget _grid(int cols) {
     Widget cardFor(BoxSpec box) => DemoCard(box: box, onTap: () => _tap(box));
 
@@ -120,16 +133,14 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
     final rows = <Widget>[];
     for (var i = 0; i < kBoxes.length; i += cols) {
       final chunk = kBoxes.sublist(i, math.min(i + cols, kBoxes.length));
-      rows.add(IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var j = 0; j < cols; j++) ...[
-              if (j > 0) const SizedBox(width: 18),
-              Expanded(child: j < chunk.length ? cardFor(chunk[j]) : const SizedBox()),
-            ],
+      rows.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var j = 0; j < cols; j++) ...[
+            if (j > 0) const SizedBox(width: 18),
+            Expanded(child: j < chunk.length ? cardFor(chunk[j]) : const SizedBox()),
           ],
-        ),
+        ],
       ));
     }
     return Column(

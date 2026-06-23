@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../demo_data.dart';
 import '../theme.dart';
-import 'outlined_box.dart';
 
 /// A single demo card: the letter badge, the behaviour tag, the interactive
 /// box, and a one-line description.
@@ -12,20 +11,48 @@ class DemoCard extends StatelessWidget {
   final BoxSpec box;
   final VoidCallback onTap;
 
+  static const _boxHeight = 138.0;
+  static const _labelPadding = EdgeInsets.all(40);
+
   @override
   Widget build(BuildContext context) {
-    final label = Center(child: Text(box.id, style: inter(32, FontWeight.w700, AppColors.ink2)));
+    final label = Text(box.id, style: inter(32, FontWeight.w700, AppColors.ink2));
 
-    // The demo itself: a plain GestureDetector with this box's HitTestBehavior,
-    // wrapping only the label. OutlinedBox draws the frame around it (as a
-    // parent), so the outline is never part of the hit-test target.
-    final interactiveBox = OutlinedBox(
+    final paddedLabel = Padding(
+      padding: _labelPadding,
+      child: Align(alignment: Alignment.center, child: label),
+    );
+
+    // All boxes share the same SizedBox + Padding layout. Hit-test behaviour differs:
+    // A — deferToChild: only Text registers; blue padding is layout-only.
+    // B/C — opaque/translucent: GestureDetector claims the full cyan rectangle.
+    // D — transparent ColoredBox fill makes the padding region hit-testable too.
+    final Widget gestureChild;
+    if (box.transparentFill) {
+      gestureChild = ColoredBox(
+        color: Colors.transparent,
+        child: paddedLabel,
+      );
+    } else {
+      gestureChild = paddedLabel;
+    }
+
+    final interactiveBox = Container(
+      width: double.infinity,
+      height: _boxHeight,
+      decoration: BoxDecoration(
+        color: AppColors.boxBg,
+        border: Border.all(color: AppColors.boxBorder),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: GestureDetector(
         behavior: box.behavior, // A: null (deferToChild) · B: opaque · C: translucent · D: null
         onTap: onTap,
-        child: box.transparentFill
-            ? ColoredBox(color: Colors.transparent, child: label) // D
-            : label,
+        child: SizedBox(
+          width: double.infinity,
+          height: _boxHeight,
+          child: gestureChild,
+        ),
       ),
     );
 
@@ -38,6 +65,7 @@ class DemoCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -71,7 +99,10 @@ class DemoCard extends StatelessWidget {
           const SizedBox(height: 16),
           interactiveBox,
           const SizedBox(height: 16),
-          Text(box.desc, style: inter(13, FontWeight.w400, AppColors.desc, height: 1.55)),
+          SizedBox(
+            width: double.infinity,
+            child: Text(box.desc, style: inter(13, FontWeight.w400, AppColors.desc, height: 1.55)),
+          ),
         ],
       ),
     );
