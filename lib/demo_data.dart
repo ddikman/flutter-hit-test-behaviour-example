@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-/// One demo box: a label shown inside an outline, wired to a [GestureDetector]
-/// configured with [behavior].
+/// One demo box: a label inside a contrast container, wired to a
+/// [GestureDetector] configured with [behavior].
 class BoxSpec {
   const BoxSpec({
     required this.id,
@@ -24,8 +24,8 @@ class BoxSpec {
   /// (deferToChild), so only the label is a hit target.
   final HitTestBehavior? behavior;
 
-  /// When true, the label sits on a `Colors.transparent` ColoredBox, which
-  /// hit-tests across the whole box even under the default behaviour (box D).
+  /// When true, the padding is wrapped in a `Colors.transparent` [ColoredBox],
+  /// which hit-tests across the whole box even under the default behaviour (box D).
   final bool transparentFill;
 }
 
@@ -33,8 +33,9 @@ const kBoxes = <BoxSpec>[
   BoxSpec(
     id: 'A',
     tag: 'deferToChild · default',
-    desc: 'GestureDetector wraps only the label, so a tap in the empty gap does '
-        'nothing — only the letter registers.',
+    desc: 'GestureDetector wraps the same padded label as the others, but under '
+        'deferToChild only the Text render box (innermost cyan outline) registers '
+        'taps — the blue padding region does not.',
   ),
   BoxSpec(
     id: 'B',
@@ -53,8 +54,8 @@ const kBoxes = <BoxSpec>[
     id: 'D',
     tag: 'Colors.transparent fill',
     transparentFill: true,
-    desc: 'Default behaviour, but the label sits on a Colors.transparent '
-        'ColoredBox that hit-tests across the whole box — so the gap taps too. '
+    desc: 'Default behaviour, but a Colors.transparent ColoredBox wraps the '
+        'padding so the whole box hit-tests — gap taps register too. '
         'Looks identical to A.',
   ),
 ];

@@ -24,7 +24,14 @@ class DemoHeader extends StatelessWidget {
               child: Text('FLUTTER', style: mono(11, FontWeight.w600, AppColors.accent, spacing: 0.7)),
             ),
             const SizedBox(width: 10),
-            Text('widgets · gesture', style: mono(12, FontWeight.w500, AppColors.sub)),
+            Flexible(
+              child: Text(
+                'widgets · gesture',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: mono(12, FontWeight.w500, AppColors.sub),
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 14),

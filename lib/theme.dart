@@ -14,6 +14,7 @@ class AppColors {
   static const sub = Color(0xFF8F8F8F);
   static const desc = Color(0xFF787878);
   static const cardBorder = Color(0xFFEFEFEF);
+  static const boxBg = Color(0xFFFFF0EE);
   static const boxBorder = Color(0xFFE2E2E2);
   static const tagBg = Color(0xFFF4F4F4);
   static const tagBorder = Color(0xFFEAEAEA);
