@@ -110,9 +110,10 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
     );
   }
 
-  /// Lays the cards out in [cols] columns, top-aligned so descriptions can wrap freely.
+  /// Lays the cards out in [cols] columns with equal row heights.
   Widget _grid(int cols) {
-    Widget cardFor(BoxSpec box) => DemoCard(box: box, onTap: () => _tap(box));
+    final stretch = cols > 1;
+    Widget cardFor(BoxSpec box) => DemoCard(box: box, onTap: () => _tap(box), stretch: stretch);
 
     if (cols == 1) {
       return Column(
@@ -128,14 +129,16 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
     final rows = <Widget>[];
     for (var i = 0; i < kBoxes.length; i += cols) {
       final chunk = kBoxes.sublist(i, math.min(i + cols, kBoxes.length));
-      rows.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (var j = 0; j < cols; j++) ...[
-            if (j > 0) const SizedBox(width: 18),
-            Expanded(child: j < chunk.length ? cardFor(chunk[j]) : const SizedBox()),
+      rows.add(IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var j = 0; j < cols; j++) ...[
+              if (j > 0) const SizedBox(width: 18),
+              Expanded(child: j < chunk.length ? cardFor(chunk[j]) : const SizedBox()),
+            ],
           ],
-        ],
+        ),
       ));
     }
     return Column(

@@ -4,12 +4,15 @@ import '../demo_data.dart';
 import '../theme.dart';
 
 /// A single demo card: the letter badge, the behaviour tag, the interactive
-/// box, and a one-line description.
+/// box, layout pseudocode, and a description.
 class DemoCard extends StatelessWidget {
-  const DemoCard({super.key, required this.box, required this.onTap});
+  const DemoCard({super.key, required this.box, required this.onTap, this.stretch = false});
 
   final BoxSpec box;
   final VoidCallback onTap;
+
+  /// When true, the card fills the stretched row height in multi-column grids.
+  final bool stretch;
 
   static const _boxHeight = 138.0;
   static const _labelPadding = EdgeInsets.all(40);
@@ -56,7 +59,76 @@ class DemoCard extends StatelessWidget {
       ),
     );
 
+    final pseudocode = Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.tagBg,
+        border: Border.all(color: AppColors.tagBorder),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        box.layoutPseudo,
+        style: mono(10.5, FontWeight.w500, AppColors.ink2, spacing: -0.2).copyWith(height: 1.45),
+      ),
+    );
+
+    final description = Text(
+      box.desc,
+      style: inter(13, FontWeight.w400, AppColors.desc, height: 1.55),
+    );
+
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+              child: Text(box.id, style: inter(14, FontWeight.w700, Colors.white)),
+            ),
+            const SizedBox(width: 11),
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: AppColors.tagBg,
+                  border: Border.all(color: AppColors.tagBorder),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Text(
+                  box.tag,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: mono(12, FontWeight.w500, AppColors.ink2),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        interactiveBox,
+        const SizedBox(height: 12),
+        pseudocode,
+        const SizedBox(height: 12),
+        if (stretch)
+          Expanded(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: description,
+            ),
+          )
+        else
+          description,
+      ],
+    );
+
     return Container(
+      height: stretch ? double.infinity : null,
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: AppColors.cardBorder),
@@ -64,47 +136,7 @@ class DemoCard extends StatelessWidget {
         boxShadow: const [BoxShadow(color: AppColors.cardShadow, blurRadius: 12, offset: Offset(0, 2))],
       ),
       padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
-                child: Text(box.id, style: inter(14, FontWeight.w700, Colors.white)),
-              ),
-              const SizedBox(width: 11),
-              Flexible(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: AppColors.tagBg,
-                    border: Border.all(color: AppColors.tagBorder),
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: Text(
-                    box.tag,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: mono(12, FontWeight.w500, AppColors.ink2),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          interactiveBox,
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: Text(box.desc, style: inter(13, FontWeight.w400, AppColors.desc, height: 1.55)),
-          ),
-        ],
-      ),
+      child: body,
     );
   }
 }
