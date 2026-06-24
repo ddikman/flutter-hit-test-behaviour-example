@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
-/// Explains the colours drawn by [debugPaintSizeEnabled] (debug builds only).
+/// Explains the colours drawn by [debugPaintSizeEnabled].
 class DebugPaintNote extends StatelessWidget {
   const DebugPaintNote({super.key});
 

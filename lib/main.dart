@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,10 +14,8 @@ import 'widgets/status_bar.dart';
 import 'widgets/why_note.dart';
 
 void main() {
-  assert(() {
-    debugPaintSizeEnabled = true;
-    return true;
-  }());
+  // This is a layout-debug teaching demo — show render bounds on the live site too.
+  debugPaintSizeEnabled = true;
   runApp(const HitTestDemoApp());
 }
 
@@ -99,10 +96,8 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
                   const SizedBox(height: 24),
                   _grid(cols),
                   const SizedBox(height: 24),
-                  if (kDebugMode) ...[
-                    const DebugPaintNote(),
-                    const SizedBox(height: 24),
-                  ],
+                  const DebugPaintNote(),
+                  const SizedBox(height: 24),
                   const WhyNote(),
                   const SizedBox(height: 20),
                   _footer(),
